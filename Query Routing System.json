@@ -1,0 +1,850 @@
+{
+  "name": "Query Routing System",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1pI4Y3HyfitovCTxMXEe1uTe7Oj1kBjzdLvDQHx3u3_w",
+          "mode": "list",
+          "cachedResultName": "Certificate Eligibility",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pI4Y3HyfitovCTxMXEe1uTe7Oj1kBjzdLvDQHx3u3_w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1079939963,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pI4Y3HyfitovCTxMXEe1uTe7Oj1kBjzdLvDQHx3u3_w/edit#gid=1079939963"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        -96
+      ],
+      "id": "97aa82dd-df23-4e38-a068-6c315c681912",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "ew22qaNqNud6jWYQ",
+          "name": "Google Sheets Trigger account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json[\"Email ID\"] }}",
+        "subject": "Student Query Form ",
+        "emailType": "text",
+        "message": "=Hello  {{ $json.Name }}\n\nKindly fill the form regarding your queries in particular ongoing classes\n.Feel free to make your point of view it will be only get checked out by operational team.\n\nLink : https://docs.google.com/forms/d/e/1FAIpQLScGE7xX7z8XcdtduQJFUBXEYA-DfybstoNmztqnDBxYe6_ySA/viewform?usp=publish-editor\n\nThank you \nDr. Shubham Parmar (Phd in Data Science)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        -96
+      ],
+      "id": "e531fc52-1987-48cd-bcbc-d312f06d9ac2",
+      "name": "Send a message",
+      "webhookId": "449eceba-2321-4772-8db5-54505178ce6f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1oqkMI0ljXoV3tFd5X-soKscm1LFssicebW9ja7VVkG0",
+          "mode": "list",
+          "cachedResultName": "Query Routing  (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqkMI0ljXoV3tFd5X-soKscm1LFssicebW9ja7VVkG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1684368721,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oqkMI0ljXoV3tFd5X-soKscm1LFssicebW9ja7VVkG0/edit#gid=1684368721"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        208
+      ],
+      "id": "7cb19495-d35f-4361-bab9-79a803019a22",
+      "name": "Google Sheets Trigger1",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "ew22qaNqNud6jWYQ",
+          "name": "Google Sheets Trigger account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.Query }}",
+        "options": {
+          "categories": "Urgent , Normal"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        192
+      ],
+      "id": "909ee077-997e-4e52-ab47-5f5a78fc05a1",
+      "name": "Sentiment Analysis"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        384
+      ],
+      "id": "abaf2072-e4d8-475f-b193-20dc023f02ee",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PBaYxGXyWLwlMi8H",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an intelligent query classification assistant for Innomatics Research Labs. \nYou must analyze the given student query and decide which department it belongs to. \nChoose one category from the following list:\n[\"Technical Doubt\", \"WiFi Issue\", \"Certification\", \"NASSCOM\", \"Batch Change\", \"Teaching Methodology\", \"LMS Access\", \"Discord Access\", \"Payment Issue\", \"Room Allocation\", \"Placement\", \"Resume Review\", \"Revoke Access\", \"Live Class Access\", \"Quiz Related\", \"Recording Video Access\", \"Assignments\", \"Tasks\"].\n\n\nStudent Details:\nName: {{ $json['Name '] }}\nEnrollment ID: {{ $json['Enrollment No'] }}\nBranch: {{ $json.Branch }}\nQuery: {{ $json.Query }}\nSentiment:{{ $json.sentimentAnalysis.category }}\n\nBased on the above, return only a text output category",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        272,
+        176
+      ],
+      "id": "c3d08c3e-e637-410c-b552-a620e32a6b68",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "Placement",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "212ba7e7-f37b-42cf-b751-3b9c8e03e955"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Placement Team"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "48981c5d-6789-4ed0-a508-ba835b699097",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "Technical Doubt",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Technical Doubt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d4d19d6f-0769-4a94-b3dd-07cd1f8ae27a",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "WiFi Issue",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "WiFi Issue"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "13c60908-15dc-4eb3-bf84-d28182aaedf5",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "Certification",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Certification"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "40102393-e4e5-431a-922f-d7ed2b7106ad",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "NASSCOM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "NASSCOM"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c5504351-9034-442c-a830-cfbd23872eeb",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "Batch Change",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Batch Change"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ba1017f7-2342-4639-ab53-430b792be1c6",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "LMS Access",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LMS Access"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4888e394-d930-471a-a3e0-93eda6d8d149",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "Payment Issue",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Payment Issue"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f87b9ad0-3d11-492a-af5e-039b581e7e8c",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "Assignments",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Assignments"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9d8a46cd-9617-401d-8869-deb37076f7c4",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "Tasks",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Tasks"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        608,
+        48
+      ],
+      "id": "119a2940-e0ff-45e3-8fa0-4f0ea46028b8",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        384
+      ],
+      "id": "88281db0-3110-4bbf-a2fb-e8bcd278c1d4",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "PBaYxGXyWLwlMi8H",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=placement@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nPlacement Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        768,
+        -176
+      ],
+      "id": "00bb0af7-d92f-4791-8aec-88b6bf356cf7",
+      "name": "Placement Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=trainer@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nTechnical Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        928,
+        -112
+      ],
+      "id": "1585e4d2-c3b0-41d5-b0a8-a5d6eac5a18c",
+      "name": "Technical Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=it_support@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nIt Support Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1184,
+        -96
+      ],
+      "id": "427fa12e-77b1-4e0b-b1fb-e4a7d56f94ab",
+      "name": "Wifi Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=admin@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nAdmin Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1056,
+        48
+      ],
+      "id": "f9c99c60-bd52-4240-88b4-5bd070933609",
+      "name": "Certificate Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=admin@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nAdmin Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        112
+      ],
+      "id": "11e4cd58-c457-40d3-8f43-da88d0f24663",
+      "name": "NASSCOM Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=academic@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nAcademics Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1088,
+        224
+      ],
+      "id": "c6665ecf-7e98-4cea-ab7b-5f5b4db3e430",
+      "name": "Batch Change Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=lms_support@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nLMS Support Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1248,
+        368
+      ],
+      "id": "9583e8d2-bc41-4a0a-9326-8686426b331b",
+      "name": "LMS Access Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=accounts@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nAccounts Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        464
+      ],
+      "id": "d44e1e9b-81c4-428d-9359-defe987dbbe5",
+      "name": "Payment Issue",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=training@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nTraining Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        976,
+        560
+      ],
+      "id": "8387f068-57bc-4428-860e-bc1dea3ae889",
+      "name": "Assignments Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=training@innomatics.in",
+        "subject": "Students Query",
+        "emailType": "text",
+        "message": "=Hello , \nTraining Team Innomatics Research Labs \nOne of the student has the query as ( {{ $('Google Sheets Trigger1').item.json.Query }} )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        544
+      ],
+      "id": "b46278eb-a82d-4841-8bf4-627b52fb3475",
+      "name": "Task Message",
+      "webhookId": "5a0a36d8-5ae4-4503-97b5-74121cf0941d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TIHP3ljkGhZWOEMo",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Google Sheets Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Placement Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Technical Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wifi Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Certificate Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NASSCOM Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Batch Change Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LMS Access Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Payment Issue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Assignments Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Task Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "72232b19-552d-4e2c-b3fa-84879ab85eb5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c4e8019c8ddba6642de65f45e14e408175dcd56ffc274feec495a0d7e28340b2"
+  },
+  "id": "uOpSizkEs8kmr83w",
+  "tags": []
+}
