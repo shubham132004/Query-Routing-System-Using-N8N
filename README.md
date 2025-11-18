@@ -75,6 +75,11 @@ Each department has a dedicated email node to ensure accurate and timely communi
 
 ---
 
+📁 Workflow JSON File
+You can find the exported n8n workflow JSON here: https://github.com/shubham132004/Query-Routing-System-Using-N8N/tree/main/JSON%20FILE
+
+
+
 ## 🛠️ Tech Stack
 
 - **n8n** (Automation platform)  
